@@ -65,9 +65,19 @@ const server = createServer(async function (req, res) {
     case "POST /c":
       try {
         const body = Buffer.concat(await req.toArray()).toString("utf8");
-        const json = JSON.parse(body);
+        const json = JSON.stringify(JSON.parse(body));
 
-        listeners.forEach();
+        listeners.forEach((l) => {
+          const stream = l.unref();
+          if (!stream) {
+            listeners.delete(l);
+            return;
+          }
+
+          stream.write("data: " + json + "\r\n\r\n");
+        });
+
+        res.writeHead(202).end();
       } catch {}
       return;
 
