@@ -18,7 +18,7 @@ export function publish(type, event) {
   }
 }
 
-createServer(async function (req, res) {
+const server = createServer(async function (req, res) {
   const url = new URL(req.url, "http://a");
   const route = `${req.method} ${url.pathname}`;
 
@@ -67,8 +67,10 @@ createServer(async function (req, res) {
         const body = Buffer.concat(await req.toArray()).toString("utf8");
         const json = JSON.parse(body);
 
-        listeners.forEach()
+        listeners.forEach();
       } catch {}
       return;
   }
 });
+
+server.listen(process.env.PORT);

@@ -1,2 +1,3 @@
 # dev-console
-console.log for mobile
+
+console.log for mobile and remote debugging
