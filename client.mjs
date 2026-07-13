@@ -20,7 +20,9 @@ export function listen() {
   source.onmessage = (e) => {
     logger(e.data);
     const { type, args, source } = JSON.parse(e.data);
-    events.dispatchEvent(new CustomEvent("log", { type, args, source }));
+    events.dispatchEvent(
+      new CustomEvent("log", { detail: { type, args, source } }),
+    );
   };
 
   return events;
