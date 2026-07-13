@@ -1,27 +1,30 @@
 const baseUrl = "https://__BASE_URL__";
 
 function send(type, args) {
+  const source = new URL(location.href).hostname;
+
   try {
     fetch(new URL("/c", baseUrl), {
       method: "POST",
-      body: JSON.stringify({ source: location.href, type, args }),
+      body: JSON.stringify({ source, type, args }),
     });
   } catch {}
 }
+
+const logger = console.log;
 
 export function listen() {
   const events = new EventTarget();
   const source = new EventSource("/events");
 
   source.onmessage = (e) => {
+    logger(e.data);
     const { type, args, source } = JSON.parse(e.data);
     events.dispatchEvent(new CustomEvent("log", { type, args, source }));
   };
 
   return events;
 }
-
-
 
 if (new URL(location.href).searchParams.get("console")) {
   const l = ["info", "error", "debug", "log", "warn"];
