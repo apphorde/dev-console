@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dev Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="p-2" id="logArea"></div>
+
+    <script type="module">
+      import { listen } from "./index.mjs";
+
+      const events = listen();
+      const textCls = {
+        error: "text-red-400",
+        warn: "text-yellow-300",
+      };
+
+      events.addEventListener("log", (e) => {
+        const { type, args, source } = e.detail;
+        const item = document.createElement("div");
+
+        item.className = "p-1 flex items-start flex-wrap";
+        const log = args
+          .map((a) => {
+            typeof a === "object"
+              ? `<code class="bg-gray-200 p-1">${JSON.stringify(a)}</code>`
+              : `<div>${String(a)}</div>`;
+          })
+          .join("");
+
+        item.innerHTML = `<div class="text-zinc-400 mb-1">${source}</div><div class="${textCls[type] || ""}">${log}</div>`;
+
+        logArea.append(item);
+      });
+    </script>
+  </body>
+</html>
