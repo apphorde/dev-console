@@ -6,18 +6,6 @@ const listeners = new Set();
 const clientScript = readFileSync("./client.mjs", "utf8");
 const indexFile = readFileSync("./index.html", "utf8");
 
-export function publish(type, event) {
-  for (const ref of listeners) {
-    const stream = ref.deref();
-    if (!stream || stream.detached || !stream.writable) {
-      listeners.delete(ref);
-      continue;
-    }
-
-    stream.write(`data: ${JSON.stringify({ type, data: event })}\n\n`);
-  }
-}
-
 const server = createServer(async function (req, res) {
   const url = new URL(req.url, "http://a");
   const route = `${req.method} ${url.pathname}`;
@@ -52,11 +40,8 @@ const server = createServer(async function (req, res) {
       res.setHeader("Cache-Control", "no-cache");
 
       const k = new WeakRef(res);
-
+      const detach = () => listeners.delete(k);
       listeners.add(k);
-      const detach = () => {
-        listeners.delete(k);
-      };
 
       req.on("close", detach);
       req.on("error", detach);
@@ -66,22 +51,23 @@ const server = createServer(async function (req, res) {
       try {
         const body = Buffer.concat(await req.toArray()).toString("utf8");
         const json = JSON.stringify(JSON.parse(body));
+        res.writeHead(202).end();
+
         console.log(json);
 
-        listeners.forEach((l) => {
-          const stream = l.unref();
+        listeners.forEach((ref) => {
+          const stream = ref?.unref();
+
           if (!stream) {
-            listeners.delete(l);
+            listeners.delete(ref);
             return;
           }
 
           stream.write("data: " + json + "\r\n\r\n");
         });
-
-        res.writeHead(202).end();
       } catch (e) {
         console.log(e);
-        res.writeHead(400).end();
+        res.closed || res.writeHead(400).end();
       }
       return;
 
