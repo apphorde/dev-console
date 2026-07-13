@@ -66,6 +66,7 @@ const server = createServer(async function (req, res) {
       try {
         const body = Buffer.concat(await req.toArray()).toString("utf8");
         const json = JSON.stringify(JSON.parse(body));
+        console.log(json);
 
         listeners.forEach((l) => {
           const stream = l.unref();
