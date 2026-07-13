@@ -56,7 +56,7 @@ const server = createServer(async function (req, res) {
         console.log(json);
 
         listeners.forEach((ref) => {
-          const stream = ref?.unref();
+          const stream = ref?.deref();
 
           if (!stream) {
             listeners.delete(ref);
