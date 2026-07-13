@@ -70,6 +70,9 @@ const server = createServer(async function (req, res) {
         listeners.forEach();
       } catch {}
       return;
+
+    default:
+      res.writeHead(404).end("Not found");
   }
 });
 
