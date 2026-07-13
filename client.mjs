@@ -21,13 +21,14 @@ export function listen() {
   return events;
 }
 
-const original = globalThis.console;
+
 
 if (new URL(location.href).searchParams.get("console")) {
   const l = ["info", "error", "debug", "log", "warn"];
   l.forEach((m) => {
+    const original = globalThis.console[m];
     globalThis.console[m] = function (...args) {
-      original[m](...args);
+      original(...args);
       send(m, args);
     };
   });
