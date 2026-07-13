@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dev Console</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        zoom: 0.75;
+      }
+    </style>
   </head>
   <body>
     <div class="p-2" id="logArea"></div>
@@ -22,13 +27,13 @@
         const { type, args, source } = e.detail;
         const item = document.createElement("div");
 
-        item.className = "p-1 flex items-start flex-wrap";
+        item.className = "p-1 flex items-start flex-wrap gap-1 border-b";
         const log = args
-          .map((a) => {
+          .map((a) =>
             typeof a === "object"
               ? `<code class="bg-gray-200 p-1">${JSON.stringify(a)}</code>`
-              : `<div>${String(a)}</div>`;
-          })
+              : `<span>${String(a)}</span>`,
+          )
           .join("");
 
         item.innerHTML = `<div class="text-zinc-400 mb-1">${source}</div><div class="${textCls[type] || ""}">${log}</div>`;

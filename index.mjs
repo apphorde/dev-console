@@ -53,8 +53,6 @@ const server = createServer(async function (req, res) {
         const json = JSON.stringify(JSON.parse(body));
         res.writeHead(202).end();
 
-        console.log(json);
-
         listeners.forEach((ref) => {
           const stream = ref?.deref();
 
