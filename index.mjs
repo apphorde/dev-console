@@ -79,7 +79,10 @@ const server = createServer(async function (req, res) {
         });
 
         res.writeHead(202).end();
-      } catch {}
+      } catch (e) {
+        console.log(e);
+        res.writeHead(400).end();
+      }
       return;
 
     default:
