@@ -22,7 +22,7 @@ const server = createServer(async function (req, res) {
     case "GET /index.mjs":
       const code = clientScript.replace(
         "__BASE_URL__",
-        String(req.headers["x-forwarded-for"]),
+        String(req.headers["x-forwarded-host"]),
       );
 
       res
